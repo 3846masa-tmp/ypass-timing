@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Password Timing</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<style type="text/css">
+html,body {
+	height: 100%;
+}
+#wrap {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -60px;
+}
+#push,#footer {
+	height: 60px;
+}
+#footer {
+	background-color: #f5f5f5;
+}
+@media ( max-width : 767px) {
+	#footer {
+		margin-left: -20px;
+		margin-right: -20px;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+}
+.container {
+	width: auto;
+	max-width: 680px;
+}
+.container .credit {
+	margin: 20px 0;
+}
+</style>
+<link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+<script type="text/javascript">
+	  var _gaq = _gaq || [];
+ 	 _gaq.push(['_setAccount', 'UA-32520755-1']);
+ 	 _gaq.push(['_trackPageview']);
+	  (function() {
+    	var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ 	   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+   	 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+ 	 })();
+</script>
+</head>
+<body bgcolor="#ffffff">
+<script>
+var before = 0;
+var timing = "";
+
+document.onkeydown = function (e){
+	if(document.activeElement.id=="passwd"){
+		var now = new Date().getTime();
+		if(before!=0){
+			var diff = Math.round((now-before)/1000);
+			timing += diff;
+		}
+		before = now;
+		var pass = document.getElementById("passwd").value;
+		document.getElementById("pass").innerHTML=mask(pass)+timing;
+	}
+};
+
+function mask(str){
+	var res = "*";
+	var i = 0;
+	for(i=0;str.length>i;i++){
+		res += "*";
+	}
+	return res;
+}
+</script>
+	<div id="wrap">
+		<div class="container">
+			<div class="page-header">
+				<h1>パスワードタイミング拡張</h1>
+			</div>
+			<h3>概要</h3>
+			<p>パスワードの入力タイミングをパスワードに混ぜ込む新しい認証方法です。
+			<br>パスワードが他人に漏れても問題ありません。
+			<br>また、従来のパスワード認証システムを改変することなく使用することができます。
+			<br><s>発表資料は <a href="http://www.slideshare.net/lanevok/pass-timing-abpro2015">こちら</a> です。</s></p>
+			<br>
+			<h3>デモ</h3>
+			<p>デモページは <a href="./demo.html">こちら</a>
+			<br>暗証番号は0000、タイミングは、2つ目と3つ目のゼロ入力の間は2秒間空ける、これ以外の入力は0.5秒以内。</p>
+			<br>
+			<h3>登録用マスターパスワードジェネレーター</h3>
+			<p>パスワードとタイミングを混ぜ込んだ登録用のマスターパスワード生成フォームです。
+			<br>Enterキーを使用したい場合はエンターキーもパスワード画面に入力してください。</p>
+			<p id="pass">ここに登録すべきパスワードが表示されます。(フォームに入力したパスワードそのものは*で隠されています)</p>
+			<input type="password" id="passwd">
+			<br>
+			<br>
+			<h3>Yahoo! ログイン用 Google Chrome 拡張</h3>
+			<p>Yahoo!でログインする際に使える Google Chrome 拡張 をダウンロードできます。</p>
+			<br>以下の手順で利用できます。
+			<ol>
+			<li><a href="./ypass-timing.crx"><img src="image/download.png"></a>　<a href="./ypass-timing.crx">Yahoo Login Password Timing Processing v1.0 をダウンロード</a> する。
+			<li>Google Chrome の設定から拡張機能(chrome://extensions)を開く
+			<li>ダウンロードした拡張機能(ypass-timing.crx)をドラッグ&ドロップして「拡張機能を追加」でインストールする。<br>
+			<br><img src="image/install.png">
+			<br>
+			<li>上の登録用マスターパスワードジェネレーターでマスターパスワードを作成し、Yahoo!サイト内(<a href="https://account.edit.yahoo.co.jp/change_pw">https://account.edit.yahoo.co.jp/change_pw</a>)でマスターパスワードに変更する。
+			<li>(ログアウトし)ログイン画面でログインを試みる。
+			</ol>
+			<p>※Google Chrome 拡張のアンインストールは、拡張機能の画面のごみ箱でアンインストールできます。
+			<br>
+			<br><font color="red">【警告】マスターパスワードは何かしらで管理しておいてください。ログインができなくなった等のトラブル全てについて、開発者は一切の責任を負いません。</font></p>
+			<p>トラブル時は、拡張機能をアンインストールし、マスターパスワードでログインしてください。</p>
+			<br>
+			<h3>仕様</h3>
+			<p>パスワードを入力する際、通常のパスワードに加え、キーを入力してから次のキー入力するまでの所要時間を取得します。</p><br>
+			<p>例えばパスワードが「pass」の場合、<br><br>[p] <- ?秒 -> [a] <- ?秒 -> [s] <- ?秒 -> [s]<br>
+			<br>の3区間の秒数(ミリ秒は四捨五入)をパスワードの末尾に連結して 「pass100」 のようにします。</p><br>
+			<p>認証時には、ユーザはパスワードを入力し、Google Chrome 拡張は、キー入力間隔を記録、パスワード送信時にキー間隔をパスワードに連結して認証システムに送ります。</p>
+			<p>本ツールは教育研究目的での開発のため、ソースのコピーまたツールの改造、またその公開や発表を許可なくしてもらって構いません。
+			<br>ソースコードは <a href="https://github.com/lanevok/ypass-timing">こちら</a> です。</p>
+			<br><br>
+		</div>
+		<div id="push"></div>
+	</div>
+	<div id="footer">
+		<div class="container">
+			<p class="muted credit">
+				<a href="./index.html">Password Timing</a>
+			</p>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Password Timing</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<style type="text/css">
+html,body {
+	height: 100%;
+}
+#wrap {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -60px;
+}
+#push,#footer {
+	height: 60px;
+}
+#footer {
+	background-color: #f5f5f5;
+}
+@media ( max-width : 767px) {
+	#footer {
+		margin-left: -20px;
+		margin-right: -20px;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+}
+.container {
+	width: auto;
+	max-width: 680px;
+}
+.container .credit {
+	margin: 20px 0;
+}
+</style>
+<link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+<script type="text/javascript">
+	  var _gaq = _gaq || [];
+ 	 _gaq.push(['_setAccount', 'UA-32520755-1']);
+ 	 _gaq.push(['_trackPageview']);
+	  (function() {
+    	var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ 	   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+   	 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+ 	 })();
+</script>
+</head>
+<body bgcolor="#ffffff">
+<script>
+var before = 0;
+var timing = "";
+var pass = "";
+
+document.onclick = function (e){
+	if(e.target.id=="clear"){
+		document.getElementById("enter").style.color = "white";
+		for(i=0;10>i;i++){
+			document.getElementById(i).style.color = "black";
+		}
+		pass = "";
+		timing = "";
+		before = 0;
+	}
+	else if(e.target.id=="enter"){
+		document.getElementById("passwd").value = pass+timing;
+		document.getElementById("form").submit();
+	}
+	if(pass.length!=4&&e.target.id!=""&&e.target.id>=0&&9>=e.target.id){
+		var now = new Date().getTime();
+		if(before!=0){
+			var diff = Math.round((now-before)/1000);
+			timing += diff;
+		}
+		before = now;
+		pass += e.target.id;
+		document.getElementById(e.target.id).style.backgroundColor = "yellow";
+		setTimeout(function() { 
+			document.getElementById(e.target.id).style.backgroundColor = "white";
+		}, 200);
+	}
+	if(pass.length==4){
+		document.getElementById("enter").style.color = "black";
+		for(i=0;10>i;i++){
+			document.getElementById(i).style.color = "white";
+		}
+	}
+};
+</script>
+	<div id="wrap">
+		<div class="container">
+			<div class="page-header">
+				<h1>デモ</h1>
+			</div>
+			<h3>暗証番号を入力してください。</h3>
+			<div class="span1">
+			<table class="table table-bordered">
+				<tr>
+					<td id="7">７</td><td id="8">８</td><td id="9">９</td>
+				</tr>
+				<tr>
+					<td id="4">４</td><td id="5">５</td><td id="6">６</td>
+				</tr>
+				<tr>
+					<td id="1">１</td><td id="2">２</td><td id="3">３</td>
+				</tr>
+				<tr>
+					<td id="0">０</td><td id="clear">×</td><td id="enter" style="color:white">→</td>
+				</tr>
+			</table>
+			</div>
+			<br><br>
+			<form method="post" action="check.php" id="form">
+			<input type="hidden" id="passwd" name="passwd">
+			<br>
+			<br><br>
+		</div>
+		<div id="push"></div>
+	</div>
+	<div id="footer">
+		<div class="container">
+			<p class="muted credit">
+				<a href="./index.html">Password Timing</a>
+			</p>
+		</div>
+	</div>
+</body>
+</html>
