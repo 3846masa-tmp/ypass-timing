@@ -1,18 +1,18 @@
-function onClick(e){
-	e.preventDefault();
-	e.stopPropagation();
-	var pass = document.getElementById("passwd").value;
-	document.getElementById("passwd").value = pass+timing;
-	document.getElementById("login_form").submit();
+function onSubmit(e) {
+	var pass = document.querySelector("input[type=password]").value;
+	document.querySelector("input[type=password]").value = pass+timing;
 }
 
-document.getElementsByClassName("btnLogin yjM")[0].addEventListener('click', onClick, true);
+Array.from(document.querySelectorAll("form")).forEach((form) => {
+	form.addEventListener('submit', onSubmit, true);
+});
 
 var before = 0;
 var timing = "";
 
 document.onkeydown = function (e){
-	if(document.activeElement.id=="passwd"){
+	if (document.activeElement === document.querySelector("input[type=password]")) {
+		console.log(e);
 		var key_code = e.keyCode;
 		var now = new Date().getTime();
 		if(before!=0){
